@@ -53,8 +53,11 @@ todoForm.addEventListener('submit', function(event) {
   let todoTrim = todoText.trim();
 
   //Input Validation
-  if (!todoTrim === 3) {
+  if (!todoTrim < 3) {
     errorMessage.textContent = 'Longer text needed!';
   }
+
+  //DO THIS NEXT
+  // Add object to the to do list after validation
 
 })
