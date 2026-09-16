@@ -13,6 +13,9 @@ const errorMessage = document.querySelector("#error-message");
 
 //Initilize App here 
 document.addEventListener('DOMContentLoaded', function() {
+
+    loadTodosFromStorage();
+
      renderTodos();
 
 })
@@ -24,6 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function renderTodos() {
     //Clear existing todos
     toDoList.innerHTML = '';
+
     
     //Create and append todo items
     todos.forEach(todo => {
@@ -47,31 +51,69 @@ function addTodo(text) {
 todoForm.addEventListener('submit', function(event) {
   event.preventDefault();
 
+  errorMessage.classList.remove('show');
   let todoText = todoInput.value;
   let todoTrim = todoText.trim();
 
   //Input Validation
   if (todoTrim.length < 3) {
-    errorMessage.textContent = 'Longer text needed!';
+    errorMessage.textContent = "Longer text needed!";
+    errorMessage.classList.add('show');
     return;
   }
 
-  //DO THIS NEXT
-  // Add object to the to do list after validation
+
+
    addTodo(todoTrim);
+   event.target.reset();
    renderTodos();
+   
+   //Save to local Storage
+   localStorage.setItem('task', JSON.stringify(todos));
 
 })
 
-function createTodoElement(todoObject) {
-  const li =  document.createElement("li");
+toDoList.addEventListener('change', handleTodoToggle)
 
-  const completedClass = todoObject.completed ? ' completed' : '';
+function handleTodoToggle(event) {
+    if (event.target.type === 'checkbox') {
+        const todoItem = event.target.closest('.todo-item');
+        
+        const todoId = todoItem.dataset.id;
+        toggleTodo(todoId);
+    }
+}
+
+function toggleTodo(id) {
+    
+    todos = todos.map(todo => {
+        
+        const isTargetTodo = todo.id === id;
+
+        if (isTargetTodo) {
+            
+            const updatedTodo = { ...todo, completed: !todo.completed };
+            return updatedTodo;
+        }
+
+        
+        return todo;
+    });
+
+     renderTodos();
+}
+
+
+
+function createTodoElement(todoObject) {
+    const li =  document.createElement("li");
+
+    const completedClass = todoObject.completed ? ' completed' : '';
     li.className = `todo-item${completedClass}`;
 
     li.setAttribute('data-id', todoObject.id);
 
-     const checkboxChecked = todoObject.completed ? 'checked' : '';
+    const checkboxChecked = todoObject.completed ? 'checked' : '';
     const checkboxAction = todoObject.completed ? 'incomplete' : 'complete';
 
      li.innerHTML = `
@@ -92,6 +134,17 @@ function createTodoElement(todoObject) {
 
     
 }
-// TO DO NEXT
-// Clear text after submission
-// Save to do items to local storage
+
+function loadTodosFromStorage() {
+    const storedTodos = localStorage.getItem('task')
+
+    if (storedTodos) {
+        todos = JSON.parse(storedTodos);
+    }
+}
+
+//TO DO
+//Add function on click to delete the item out of local storage 
+//Add fucntion on checkbox click to update the item to compleated and change the text
+
+//function 
