@@ -84,6 +84,23 @@ function handleTodoToggle(event) {
     }
 }
 
+toDoList.addEventListener('click', handleTodoDelete);
+
+function handleTodoDelete(event) {
+    if (event.target.classList.contains('delete-btn')) {
+         const todoItem = event.target.closest('.todo-item');
+         const todoId = todoItem.dataset.id;
+         deleteTodo(todoId)
+    }
+}
+
+function deleteTodo(id) {
+    todos = todos.filter(todo => todo.id !== id);
+    localStorage.setItem('task', JSON.stringify(todos))
+    renderTodos();
+
+}
+
 function toggleTodo(id) {
     
     todos = todos.map(todo => {
@@ -143,8 +160,3 @@ function loadTodosFromStorage() {
     }
 }
 
-//TO DO
-//Add function on click to delete the item out of local storage 
-//Add fucntion on checkbox click to update the item to compleated and change the text
-
-//function 
